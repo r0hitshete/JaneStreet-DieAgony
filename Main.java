@@ -7,6 +7,7 @@ public class Main {
     
 
     public static void main(String[] args) {
+        // initialize variables and arr
         die = new double[6];
         path = new ArrayList<>();
         solution = 0;
@@ -14,8 +15,11 @@ public class Main {
                 { 186, 42, 195, 704, 452, 228 }, { -7, 2, 357, 452, 317, 395 }, { 5, 23, -4, 592, 445, 620 },
                 { 0, 77, 32, 403, 337, 452 } };
         int copy[][] = copy(arr);
-
+        
+        // call recursive method
         findDie(arr, 5, 0, 0, 'n', 0, 0, 0, 0, 0, 0, 0, copy, new ArrayList<>());
+        
+        // prints out relevant information
         System.out.print("Dice values: ");
         for (double x : die) {
             System.out.print(x + " ");
@@ -31,11 +35,16 @@ public class Main {
 
     }
 
+    // This method finds the right path, the die values, and the added value of the squares
     public static void findDie(int[][] A, int i, int j, int m, char prev, double score, double curr, double up,
             double down, double left, double right, double bottom, int[][] B, ArrayList<Integer> p) {
+        
+        // copies array(s) so recursion works (back tracking works)
         int n = A.length;
         B = copy(B);
         p = new ArrayList<>(p);
+        
+        // rotates die based on previous move direction 
         if (i >= 0 && i < n && j >= 0 && j < n) {
             if (prev == 'r') {
                 double temp = curr;
@@ -65,6 +74,7 @@ public class Main {
                 bottom = down;
                 down = temp;
             }
+            // if at last spot, adds directions to dice array and finds the added value of all squares
             if (i == 0 && j == n - 1) {
                 die[0] = curr;
                 die[1] = up;
@@ -80,7 +90,10 @@ public class Main {
                     }
                 }
                 path = p;
-            } else {
+            } 
+            
+            // rotates the die all directions recursively if curr has a value and we are at the right square
+            else {
                 if (curr != 0.0 && score + m * curr == A[i][j]) {
                     p.add(A[i][j]);
                     B[i][j] = 0;
@@ -89,7 +102,8 @@ public class Main {
                     findDie(A, i, j - 1, m + 1, 'l', score + m * curr, curr, up, down, left, right, bottom, B, p);
                     findDie(A, i + 1, j, m + 1, 'd', score + m * curr, curr, up, down, left, right, bottom, B, p);
                 }
-
+                
+                // if curr is 0, finds the value curr should be and then rotates
                 if (curr == 0.0) {
                     if (prev != 'n') {
                         curr = ((double) (A[i][j] - score)) / (m);
@@ -104,6 +118,8 @@ public class Main {
             }
         }
     }
+    
+    // method to copy 2d array
     public static int[][] copy(int[][] A) {
 
         int [][] B = new int[A.length][];
